@@ -1,15 +1,38 @@
 <!--
  * @Author: liming
  * @Date: 2021-09-08 22:34:06
- * @LastEditTime: 2022-02-20 20:54:46
+ * @LastEditTime: 2022-02-27 22:58:31
  * @FilePath: \Vue3ZheYeColumn\02-代码手敲\zheye\src\App.vue
 -->
 <template>
   <div class="container">
     <global-header :user="currentUser"></global-header>
     <!-- <column-list :list="list"></column-list> -->
-    <form>
+    <validate-form @form-submit="onFormSubmit">
+      <!-- <div class="mb-3">
+        <label class="form-label">邮箱地址</label>
+        <validate-input :rules="emailRules"></validate-input>
+      </div> -->
       <div class="mb-3">
+        <label class="form-label">邮箱地址</label>
+        <validate-input
+          :rules="emailRules"
+          v-model="emailVal"
+          placeholder="请输入邮箱地址"
+          type="text"
+        ></validate-input>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">密码</label>
+        <validate-input
+          :rules="emailRules"
+          v-model="passwordVal"
+          placeholder="请输入密码"
+          type="password"
+        ></validate-input>
+      </div>
+      <!-- <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">邮箱地址</label>
         <input
           type="email"
@@ -22,76 +45,97 @@
         <div class="form-text" v-if="emailRef.error">
           {{ emailRef.message }}
         </div>
-      </div>
-      <div class="mb-3">
+      </div> -->
+
+      <!-- <div class="mb-3">
         <label for="exampleInputPassword1" class="form-label">密码</label>
         <input
           type="password"
           class="form-control"
           id="exampleInputPassword1"
         />
-      </div>
+      </div> -->
+
       <!-- <div class="mb-3 form-check">
     <input type="checkbox" class="form-check-input" id="exampleCheck1">
     <label class="form-check-label" for="exampleCheck1">Check me out</label>
   </div>
   <button type="submit" class="btn btn-primary">Submit</button> -->
-    </form>
+
+      <!-- <template v-slot:submit> -->
+      <!-- 具名插槽的缩写:#name -->
+      <template #submit>
+        <span class="btn btn-danger">提交</span>
+      </template>
+    </validate-form>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
+import { defineComponent, reactive, ref } from "vue";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ColumnList, { ColumnProps } from "./components/ColumnList.vue";
 import GlobalHeader, { UserProps } from "./components/GlobalHeader.vue";
+import ValidateInput, { RulesProp } from "./components/ValidateInput.vue";
+import ValidateForm from "./components/ValidateForm.vue";
 const currentUser: UserProps = {
   isLogin: true,
   name: "liming",
-  id: 1
+  id: 1,
 };
 
 const testData: ColumnProps[] = [
   {
     id: 1,
     title: "hello world",
-    description: "这是一个测试数据"
+    description: "这是一个测试数据",
     // avatar: "https://avatars0.githubusercontent.com/u/8186664?s=460&v=4"
   },
   {
     id: 2,
     title: "hello world2",
     description: "这是一个测试数据2",
-    avatar: "https://avatars0.githubusercontent.com/u/8186664?s=460&v=4"
+    avatar: "https://avatars0.githubusercontent.com/u/8186664?s=460&v=4",
   },
   {
     id: 3,
     title: "hello world",
     description: "这是一个测试数据",
-    avatar: "https://avatars0.githubusercontent.com/u/8186664?s=460&v=4"
+    avatar: "https://avatars0.githubusercontent.com/u/8186664?s=460&v=4",
   },
   {
     id: 4,
     title: "hello world2",
     description: "这是一个测试数据2",
-    avatar: "https://avatars0.githubusercontent.com/u/8186664?s=460&v=4"
-  }
+    avatar: "https://avatars0.githubusercontent.com/u/8186664?s=460&v=4",
+  },
 ];
 
-const emailReg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+const emailReg =
+  /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 export default defineComponent({
   name: "App",
   components: {
     ColumnList,
-    GlobalHeader
+    GlobalHeader,
+    ValidateInput,
+    ValidateForm,
   },
   setup() {
+    const emailVal = ref("");
+    const passwordVal = ref("");
+    const emailRules: RulesProp = [
+      { type: "required", message: "电子邮箱地址不能为空" },
+      { type: "email", message: "请输入正确的电子邮件格式" },
+    ];
+
     const emailRef = reactive({
       val: "",
       error: false,
-      message: ""
+      message: "",
     });
+
     const validateEmail = () => {
       // 添加是否为空的逻辑
       if (emailRef.val.trim() === "") {
@@ -102,13 +146,21 @@ export default defineComponent({
         emailRef.message = "邮箱格式不正确";
       }
     };
+
+    const onFormSubmit = (result: boolean) => {
+      console.log(result);
+    };
     return {
       list: testData,
       currentUser,
       emailRef,
-      validateEmail
+      validateEmail,
+      emailRules,
+      emailVal,
+      passwordVal,
+      onFormSubmit,
     };
-  }
+  },
 });
 </script>
 

@@ -1,8 +1,8 @@
 <!--
  * @Author: liming
  * @Date: 2021-09-11 18:45:12
- * @LastEditTime: 2022-02-04 13:47:16
- * @FilePath: \Vue3ZheYeColumn\02-代码手敲\zheye\src\components\ColumnList.vue
+ * @LastEditTime: 2022-02-27 13:53:19
+ * @FilePath: \zheye\src\components\ColumnList.vue
 -->
 <template>
   <div class="row">
@@ -38,21 +38,21 @@ export default defineComponent({
     list: {
       type: Array as PropType<ColumnProps[]>,
       //如果你想把构造函数断言成一个类型，你可以这么写
-      required: true
-    }
+      required: true,
+    },
   },
   setup(props) {
     // props.list[0].title = "hello world";
     const columnList = computed(() => {
-        //使用columnList来处理list的数据，如果没有图片地址，就使用默认的
-      return props.list.map(column => {
+      //使用columnList来处理list的数据，如果没有图片地址，就使用默认的
+      return props.list.map((column) => {
         if (!column.avatar) {
           column.avatar = require("@/assets/column.jpg");
         }
         return column;
       });
     });
-    return {columnList};
-  }
+    return { columnList };
+  },
 });
 </script>
