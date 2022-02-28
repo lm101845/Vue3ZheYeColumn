@@ -1,8 +1,8 @@
 <!--
  * @Author: liming
  * @Date: 2022-02-22 23:01:38
- * @LastEditTime: 2022-02-27 14:52:10
- * @FilePath: \zheye\src\components\ValidateInput.vue
+ * @LastEditTime: 2022-02-28 22:52:34
+ * @FilePath: \Vue3ZheYeColumn\02-代码手敲\zheye\src\components\ValidateInput.vue
 -->
 <template>
   <div class="validate-input-container pb-3">
@@ -21,7 +21,7 @@
       @blur="validateInput"
       @input="updateValue"
     /> -->
-        <input
+    <input
       class="form-control"
       :class="{ 'is-invalid': inputRef.error }"
       :value="inputRef.val"
@@ -36,7 +36,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, PropType } from "vue";
+import { defineComponent, reactive, PropType, onMounted } from "vue";
+import { emitter } from "./ValidateForm.vue";
 const emailReg =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
@@ -51,10 +52,10 @@ export default defineComponent({
     rules: Array as PropType<RulesProp>,
     modelValue: String,
   },
-  inheritAttrs:false,
-  setup(props,context) {
-      console.log(context.attrs,'context.attrs值');
-      
+  inheritAttrs: false,
+  setup(props, context) {
+    console.log(context.attrs, "context.attrs值");
+
     const inputRef = reactive({
       //   val: "",
       val: props.modelValue || "",
@@ -62,10 +63,10 @@ export default defineComponent({
       message: "",
     });
 
-    const updateValue = (e: KeyboardEvent) => {
+    const updateValue = (e: any) => {
       const targetValue = (e.target as HTMLInputElement).value;
-      inputRef.val = targetValue
-      context.emit('update:modelValue', targetValue);
+      inputRef.val = targetValue;
+      context.emit("update:modelValue", targetValue);
     };
 
     const validateInput = () => {
@@ -85,13 +86,19 @@ export default defineComponent({
           return passed;
         });
         inputRef.error = !allPassed;
+        return allPassed;
       }
+      return true;
     };
+    onMounted(() => {
+      // emitter.emit('form-item-created',inputRef.val);
+      emitter.emit("form-item-created", validateInput);
+    });
 
     return {
       inputRef,
       validateInput,
-      updateValue
+      updateValue,
     };
   },
 });

@@ -1,7 +1,7 @@
 <!--
  * @Author: liming
  * @Date: 2021-09-08 22:34:06
- * @LastEditTime: 2022-02-27 22:58:31
+ * @LastEditTime: 2022-02-28 22:18:21
  * @FilePath: \Vue3ZheYeColumn\02-代码手敲\zheye\src\App.vue
 -->
 <template>
@@ -20,6 +20,7 @@
           v-model="emailVal"
           placeholder="请输入邮箱地址"
           type="text"
+          ref="inputRef"
         ></validate-input>
       </div>
 
@@ -123,6 +124,7 @@ export default defineComponent({
     ValidateForm,
   },
   setup() {
+    const inputRef = ref<any>();
     const emailVal = ref("");
     const passwordVal = ref("");
     const emailRules: RulesProp = [
@@ -148,7 +150,8 @@ export default defineComponent({
     };
 
     const onFormSubmit = (result: boolean) => {
-      console.log(result);
+      console.log('result',result,inputRef.value.validateInput());
+      
     };
     return {
       list: testData,
@@ -159,6 +162,7 @@ export default defineComponent({
       emailVal,
       passwordVal,
       onFormSubmit,
+      inputRef
     };
   },
 });
