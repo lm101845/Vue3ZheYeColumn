@@ -1,7 +1,7 @@
 <!--
  * @Author: liming
  * @Date: 2022-02-22 23:01:38
- * @LastEditTime: 2022-02-28 22:52:34
+ * @LastEditTime: 2022-03-05 23:11:27
  * @FilePath: \Vue3ZheYeColumn\02-代码手敲\zheye\src\components\ValidateInput.vue
 -->
 <template>
@@ -22,6 +22,7 @@
       @input="updateValue"
     /> -->
     <input
+      v-if="tag !== 'textarea'"
       class="form-control"
       :class="{ 'is-invalid': inputRef.error }"
       :value="inputRef.val"
@@ -29,6 +30,14 @@
       @input="updateValue"
       v-bind="$attrs"
     />
+    <textarea
+      v-else
+      class="form-control"
+      :class="{ 'is-invalid': inputRef.error }"
+      :value="inputRef.val"
+      @blur="validateInput"
+      @input="updateValue"
+      v-bind="$attrs"/>
     <span v-if="inputRef.error" class="invalid-feedback">{{
       inputRef.message
     }}</span>
@@ -46,11 +55,16 @@ interface RuleProp {
   message: string;
 }
 export type RulesProp = RuleProp[];
+export type TagType = "input" | "textarea";
 
 export default defineComponent({
   props: {
     rules: Array as PropType<RulesProp>,
     modelValue: String,
+    tag: {
+      type: String as PropType<TagType>,
+      default: "input",
+    },
   },
   inheritAttrs: false,
   setup(props, context) {

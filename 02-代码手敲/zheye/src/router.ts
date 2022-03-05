@@ -1,11 +1,11 @@
 /*
  * @Author: liming
- * @Date: 2022-02-04 13:14:13
- * @LastEditTime: 2022-03-05 09:48:45
- * @FilePath: \Vue3ZheYeColumn\01-课程资料\01-源码\zheye-master\zheye\src\router.ts
+ * @Date: 2022-03-05 09:47:25
+ * @LastEditTime: 2022-03-06 00:04:58
+ * @FilePath: \Vue3ZheYeColumn\02-代码手敲\zheye\src\router.ts
  */
 import { createRouter, createWebHistory } from "vue-router";
-import axios from "axios";
+// import axios from "axios";
 import Home from "./views/Home.vue";
 import Login from "./views/Login.vue";
 import Signup from "./views/Signup.vue";
@@ -52,40 +52,14 @@ const router = createRouter({
     },
   ],
 });
+
 router.beforeEach((to, from, next) => {
-  const { user, token } = store.state;
-  const { requiredLogin, redirectAlreadyLogin } = to.meta;
-  if (!user.isLogin) {
-    if (token) {
-      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-      store
-        .dispatch("fetchCurrentUser")
-        .then(() => {
-          if (redirectAlreadyLogin) {
-            next("/");
-          } else {
-            next();
-          }
-        })
-        .catch((e) => {
-          console.error(e);
-          store.commit("logout");
-          next("login");
-        });
-    } else {
-      if (requiredLogin) {
-        next("login");
-      } else {
-        next();
-      }
-    }
+  if (to.meta.requiredLogin && !store.state.user.isLogin) {
+    next({ name: "login" });
+  } else if (to.meta.redirectAlreadyLogin && store.state.user.isLogin) {
+    next('/');
   } else {
-    if (redirectAlreadyLogin) {
-      next("/");
-    } else {
-      next();
-    }
+      next()
   }
 });
-
 export default router;
