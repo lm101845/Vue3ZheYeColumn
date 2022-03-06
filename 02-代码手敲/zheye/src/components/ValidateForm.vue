@@ -5,47 +5,42 @@
  * @FilePath: \Vue3ZheYeColumn\02-代码手敲\zheye\src\components\ValidateForm.vue
 -->
 <template>
-  <form class="validate-form-container">
-    <slot name="default"></slot>
+  <div class="validate-form-container">
+    <slot></slot>
     <div class="submit-area" @click.prevent="submitForm">
       <slot name="submit">
         <button type="submit" class="btn btn-primary">提交</button>
       </slot>
     </div>
-  </form>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onUnmounted } from "vue";
-import mitt from "mitt";
-type ValidateFunc = () => boolean;
+import { defineComponent, onUnmounted } from 'vue'
+import mitt from 'mitt'
+type ValidateFunc = () => boolean
+export const emitter = mitt()
 
-export const emitter = mitt();
 export default defineComponent({
-  emits: ["form-submit"],
-  setup(props, context) {
-    let funcArr: ValidateFunc[] = [];
+  name: 'ValidateForm',
+  emits: ['form-submit'],
+  setup(props, { emit }) {
+    let funcArr: ValidateFunc[] = []
     const submitForm = () => {
-      const result = funcArr.map(func=>func()).every(result=>result);
-      context.emit("form-submit", result);
-    };
-    const callback:any = (func: ValidateFunc) => {
-      funcArr.push(func)
-    };
-
-    // emitter.on("form-item-created", (e) => console.log("foo", e));
-    emitter.on("form-item-created", callback);
-
+      const valid = funcArr.map((func) => func()).every((valid) => valid)
+      emit('form-submit', valid)
+    }
+    const callback = (func: unknown) => {
+      funcArr.push(func as ValidateFunc)
+    }
+    emitter.on('form-item-created', callback)
     onUnmounted(() => {
-      emitter.off("form-item-created", callback);
+      emitter.off('form-item-created', callback)
       funcArr = []
-    });
+    })
     return {
-      submitForm,
-    };
-  },
-  //   mounted() {
-  //     this.$on("item-created", () => {});
-  //   },
-});
+      submitForm
+    }
+  }
+})
 </script>

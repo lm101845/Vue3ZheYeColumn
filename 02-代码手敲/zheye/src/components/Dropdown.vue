@@ -10,28 +10,22 @@
       href="#"
       class="btn btn-outline-light my-2 dropdown-toggle"
       @click.prevent="toggleOpen"
-      >{{ title }}</a
     >
-    <!-- 添加.prevent可以防止a链接的默认行为 -->
+      {{ title }}
+    </a>
     <ul class="dropdown-menu" :style="{ display: 'block' }" v-if="isOpen">
-      <!-- <li class="dropdown-item">
-        <a class="dropdown-item" href="#">新建文章</a>
-      </li>
-      <li class="dropdown-item">
-        <a class="dropdown-item" href="#">编辑资料</a>
-      </li> -->
       <slot></slot>
     </ul>
   </div>
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, onMounted, onUnmounted } from "vue";
-// import { ref, defineComponent, watch } from "vue";
-import useClickOutside from "../hooks/useClickOutside";
+import { defineComponent, ref, watch, Ref } from 'vue'
+import useClickOutside from '../hooks/useClickOutside'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
-  name: "Dropdown",
+  name: 'DropDown',
   props: {
     title: {
       type: String,
@@ -39,41 +33,29 @@ export default defineComponent({
     }
   },
   setup() {
-    const isOpen = ref(false);
-    const dropdownRef = ref<null | HTMLElement>(null);
+    const isOpen = ref(false)
+    const dropdownRef: Ref<HTMLElement | null> = ref(null)
+    const isClickOutside = useClickOutside(dropdownRef)
+    const route = useRoute()
     const toggleOpen = () => {
-      isOpen.value = !isOpen.value;
-    };
-    // const isClickOutside = useClickOutside(dropdownRef);
-    // //这个报错，那就不用把这个函数抽到外面去这个方法了
-
-    // watch(isClickOutside, () => {
-    //   if (isOpen.value && isClickOutside.value) {
-    //     isOpen.value = false;
-    //   }
-    // });
-    const handler = (e: MouseEvent) => {
-      if (dropdownRef.value) {
-        // console.log(dropdownRef.value);
-        if (
-          !dropdownRef.value.contains(e.target as HTMLElement) &&
-          isOpen.value
-        ) {
-          isOpen.value = false;
-        }
+      isOpen.value = !isOpen.value
+    }
+    watch(isClickOutside, () => {
+      if (isClickOutside.value && isOpen.value) {
+        isOpen.value = false
       }
-    };
-    onMounted(() => {
-      document.addEventListener("click", handler);
-    });
-    onUnmounted(() => {
-      document.removeEventListener("click", handler);
-    });
+    })
+    watch(route, () => {
+      isOpen.value = false
+    })
     return {
       isOpen,
-      toggleOpen,
-      dropdownRef
-    };
+      dropdownRef,
+      toggleOpen
+    }
   }
-});
+})
 </script>
+
+<style scoped></style>
+

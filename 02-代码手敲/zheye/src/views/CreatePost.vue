@@ -58,9 +58,9 @@ import { useRouter, useRoute } from 'vue-router'
 import { GlobalDataProps, PostProps, ResponseType, ImageProps } from '../store'
 import ValidateInput, { RulesProp } from '../components/ValidateInput.vue'
 import ValidateForm from '../components/ValidateForm.vue'
-// import Uploader from '../components/Uploader.vue'
+import Uploader from '../components/Uploader.vue'
 // import createMessage from '../components/createMessage'
-import { beforeUploadCheck } from '../helper'
+import { beforeUploadCheck } from '../utils/helper'
 export default defineComponent({
   name: 'Login',
   components: {

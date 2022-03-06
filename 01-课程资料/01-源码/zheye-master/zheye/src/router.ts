@@ -1,18 +1,14 @@
-/*
- * @Author: liming
- * @Date: 2022-02-04 13:14:13
- * @LastEditTime: 2022-03-05 09:48:45
- * @FilePath: \Vue3ZheYeColumn\01-课程资料\01-源码\zheye-master\zheye\src\router.ts
- */
 import { createRouter, createWebHistory } from "vue-router";
-import axios from "axios";
-import Home from "./views/Home.vue";
-import Login from "./views/Login.vue";
-import Signup from "./views/Signup.vue";
-import ColumnDetail from "./views/ColumnDetail.vue";
-import CreatePost from "./views/CreatePost.vue";
-import PostDetail from "./views/PostDetail.vue";
-import store from "./store";
+import Home from "@/views/Home.vue";
+import Login from "@/views/Login.vue";
+import ColumnDetail from "@/views/ColumnDetail.vue";
+import CreatePost from "@/views/CreatePost.vue";
+import Signup from "@/views/Signup.vue";
+import PostDetail from "@/views/PostDetail.vue";
+import UserDetail from "@/views/UserDetail.vue";
+import store from "@/store";
+import http from "./utils/http";
+
 const routerHistory = createWebHistory();
 const router = createRouter({
   history: routerHistory,
@@ -50,6 +46,11 @@ const router = createRouter({
       name: "post",
       component: PostDetail,
     },
+    {
+      path: "/edit",
+      name: "edit",
+      component: UserDetail,
+    },
   ],
 });
 router.beforeEach((to, from, next) => {
@@ -57,7 +58,7 @@ router.beforeEach((to, from, next) => {
   const { requiredLogin, redirectAlreadyLogin } = to.meta;
   if (!user.isLogin) {
     if (token) {
-      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+      http.defaults.headers.common.Authorization = `Bearer ${token}`;
       store
         .dispatch("fetchCurrentUser")
         .then(() => {
@@ -70,11 +71,11 @@ router.beforeEach((to, from, next) => {
         .catch((e) => {
           console.error(e);
           store.commit("logout");
-          next("login");
+          next("/login");
         });
     } else {
       if (requiredLogin) {
-        next("login");
+        next("/login");
       } else {
         next();
       }
