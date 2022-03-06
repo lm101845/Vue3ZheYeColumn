@@ -1,7 +1,7 @@
 <!--
  * @Author: liming
  * @Date: 2022-03-05 09:37:48
- * @LastEditTime: 2022-03-05 14:29:26
+ * @LastEditTime: 2022-03-06 14:08:51
  * @FilePath: \Vue3ZheYeColumn\02-代码手敲\zheye\src\views\Login.vue
 -->
 <template>
@@ -54,8 +54,8 @@ export default defineComponent({
     ValidateForm
   },
   setup() {
-    const email = ref('111@test.com')
-    const password = ref('111111')
+    const email = ref('1018457683@qq.com')
+    const password = ref('123456')
     const store = useStore<GlobalDataProps>()
     const router = useRouter()
     const emailRules: RulesProp = [
@@ -106,4 +106,3 @@ export default defineComponent({
   width: 100%;
 }
 </style>
-
